@@ -1,22 +1,16 @@
-/*
-    En este archivo se muestra un ejemplo de listas con otro
-    tipo de dato, en este caso "Asignatura".
-
-*/
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
 
-//Definición del tipo de dato
+
 typedef struct Asignatura{
-    int codigo; // Código de la asignatura
-    char descripcion[40]; // Descripción de la asignatura
-    int uc; // Unidades de crédito
+    int codigo;
+    char descripcion[40]; 
+    int uc;
 }ASIGNATURA;
 
 typedef struct Nodo{
-    ASIGNATURA asignatura; // Variable de tipo ASIGNATURA para el nodo
+    ASIGNATURA asignatura; 
     struct Nodo *sig;
 }NODO;
 
@@ -33,7 +27,6 @@ int main(){
 
     NODO *lista = NULL;
 
-    //Agregamos las asignaturas a la lista, pasando los valores a la función "agregarNodo"
     agregarNodo(lista,1472103,"FUNDAMENTOS DE LA INFORMATICA",4);
     agregarNodo(lista,1472107,"LOGICA COMPUTACIONAL",3);
     agregarNodo(lista,1472211,"TECNICAS DE PROGRAMACION I",4);
@@ -42,30 +35,20 @@ int main(){
     agregarNodo(lista,1472428,"ESTRUCTURA DE DATOS",4);
     mostrarLista(lista);
 
-    eliminarNodo(lista,1472211); // Eliminamos una asignatura de la lista pasando el código de ésta
+    eliminarNodo(lista,1472107); 
+    printf("\n"); mostrarLista(lista);    
 
-    printf("\n"); mostrarLista(lista); // Mostramos la lista actualizada para verificar que se haya eliminado el nodo
-
-    liberarMemoria(lista);
-
-  fflush(stdin); getchar(); // Nos aseguramos que haya una pausa al final del programa
+  fflush(stdin); getchar();
+  liberarMemoria(lista);
   return 0;
 }
 
 
-NODO* crearNodo(){
-  return ((NODO*) malloc(sizeof(NODO)));
-}
-
+NODO* crearNodo(){ return ((NODO*) malloc(sizeof(NODO))); }
 
 bool agregarNodo(NODO* &p, int cod,char *des,int uc){
-    /* Recibimos los atributos para la variable "asignatura" del nodo.
-       Lo hacemos así porque son solo 3. Si son más atributos se podría
-       declarar una variable de tipo ASIGNATURA, asignarles los valores
-       y recibirla en esta función si se desea. */
     NODO *temp,*nuevo = crearNodo();
     if(!nuevo) return false;
-    //Le asignamos los valores recibidos a la variable "asignatura" del nodo
     nuevo->asignatura.codigo = cod;
     strcpy(nuevo->asignatura.descripcion,des);
     nuevo->asignatura.uc = uc;
@@ -77,7 +60,6 @@ bool agregarNodo(NODO* &p, int cod,char *des,int uc){
     }
 
     temp = p;
-
     while(temp->sig) temp = temp->sig;
     temp->sig = nuevo;
 
@@ -85,9 +67,6 @@ bool agregarNodo(NODO* &p, int cod,char *des,int uc){
 }
 
 bool eliminarNodo(NODO* &p, int cod){
-    /* Recibimos el código de la asignatura y buscamos el nodo
-       que contenga en su variable asignatura ese código para
-       proceder a eliminarlo */
     NODO *temp,*ant;
     if(!p) return false;
 
@@ -100,16 +79,16 @@ bool eliminarNodo(NODO* &p, int cod){
 
     temp = p;
 
-    do{
+    while(temp && temp->asignatura.codigo != cod){
         ant = temp;
         temp = temp->sig;
-    }while(temp && temp->asignatura.codigo != cod);
+    }
 
-    if(temp){
-      ant->sig = temp->sig;
-      free(temp);
-      return true;
-    }else return false;
+    if(!temp) return false;
+    
+    ant->sig = temp->sig;
+    free(temp);
+  return true;  
 }
 
 void mostrarLista(NODO *p){

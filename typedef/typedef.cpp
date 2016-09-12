@@ -3,10 +3,10 @@
 #include<string.h>
 
 typedef struct Estudiante{
-       char Cedula[10];
-       char Nombre[20];
-       char Apellido[20];
-       int Edad;       
+       char cedula[10];
+       char nombre[20];
+       char apellido[20];
+       int edad;
 }ESTUDIANTE;
 
 ESTUDIANTE pedirDatos();
@@ -14,7 +14,7 @@ void mostrarDatos(ESTUDIANTE est);
 void modificarDatos(ESTUDIANTE *est);
 
 int main(){
-    
+
     ESTUDIANTE estudiante;
     estudiante = pedirDatos();
     printf("\n\n------ Datos ------\n");
@@ -23,9 +23,8 @@ int main(){
     modificarDatos(&estudiante);
     printf("\n\n------ Datos ------\n");
     mostrarDatos(estudiante);
-    
-    fflush(stdin);getchar();    
-    
+
+    fflush(stdin);getchar();
   return 0;
 }
 
@@ -33,29 +32,29 @@ int main(){
 ESTUDIANTE pedirDatos(){
     ESTUDIANTE est;
     printf("Cedula:      ");
-    fflush(stdin);gets(est.Cedula);
+    fflush(stdin); gets(est.cedula);
     printf("Nombre:      ");
-    fflush(stdin);gets(est.Nombre);
+    fflush(stdin); gets(est.nombre);
     printf("Apellido:    ");
-    fflush(stdin);gets(est.Apellido);
+    fflush(stdin); gets(est.apellido);
     printf("Edad:        ");
-    fflush(stdin); scanf("%i",&est.Edad);
-  return est;    
+    fflush(stdin); scanf("%i",&est.edad);
+  return est;
 }
 
 void mostrarDatos(ESTUDIANTE est){
-    printf("Cedula:      %s \n",est.Cedula);
-    printf("Nombre:      %s \n",est.Nombre);
-    printf("Apellido:    %s \n",est.Apellido);
-    printf("Edad:        %i \n",est.Edad);
+    printf("Cedula:      %s \n",est.cedula);
+    printf("Nombre:      %s \n",est.nombre);
+    printf("Apellido:    %s \n",est.apellido);
+    printf("Edad:        %i \n",est.edad);
 }
 
 void modificarDatos(ESTUDIANTE *est){
     printf("Nombre:      ");
-    fflush(stdin);gets(est->Nombre);
+    fflush(stdin); gets(est->nombre);
     printf("Apellido:    ");
-    fflush(stdin);gets(est->Apellido);
+    fflush(stdin); gets(est->apellido);
     printf("Edad:        ");
-    fflush(stdin); scanf("%i",&est->Edad);
+    fflush(stdin); scanf("%i",&est->edad);
 }
 

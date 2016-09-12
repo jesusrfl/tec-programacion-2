@@ -3,8 +3,8 @@
 
 
 typedef struct Nodo{
-    int Num; 
-    struct Nodo *Sig; 
+    int num;
+    struct Nodo *sig;
 }NODO;
 
 
@@ -21,7 +21,6 @@ int main(){
 
     NODO *lista = NULL;
 
-    // Agregando nodos al final de la lista
     agregarNodo(lista,1);
     agregarNodo(lista,2);
     agregarNodo(lista,3);
@@ -30,72 +29,68 @@ int main(){
 
 
     mostrarLista(lista);
-    eliminarNodo(lista,1); 
+    eliminarNodo(lista,1);
     eliminarNodo(lista,5);
-    agregarNodo2(lista,0);//Agrega el nodo al inicio
+    agregarNodo2(lista,0);
     agregarNodo(lista,9);
 
-    printf("\n"); 
+    printf("\n");
     mostrarLista(lista);
 
-    liberarMemoria(lista); 
-
   fflush(stdin); getchar();
+  liberarMemoria(lista);
   return 0;
 }
 
 
 NODO* crearNodo(){ return ((NODO*) malloc(sizeof(NODO))); }
 
-
-bool agregarNodo(NODO* &p, int n){     
+bool agregarNodo(NODO* &p, int n){
      if(!p){
         p = crearNodo();
-        p->Num = n;
-        p->Sig = NULL; 
+        p->num = n;
+        p->sig = NULL;
         return true;
-     }     
-     agregarNodo(p->Sig,n);
+     }
+     agregarNodo(p->sig,n);
 }
 
-
 bool agregarNodo2(NODO* &p, int n){
-    /*Esta función no cambia porque solo se ejecuta una vez */
+    // No tiene recursividad porque no necesita algún ciclo para ejecutarse
     NODO *temp,*nuevo = crearNodo();
-    nuevo->Num = n;
-    nuevo->Sig = NULL;
+    nuevo->num = n;
+    nuevo->sig = NULL;
     if(!p){
         p = nuevo;
         return true;
     }
-    temp = p; 
+    temp = p;
     p = nuevo;
-    p->Sig = temp;
-  return true;       
+    p->sig = temp;
+  return true;
 }
-
 
 bool eliminarNodo(NODO* &p, int n){
     NODO *temp;
-    if(!p) return false; 
-    if(p->Num == n){
+    if(!p) return false;
+    if(p->num == n){
         temp = p;
-        p = p->Sig;
+        p = p->sig;
         free(temp);
         return true;
     }
-    eliminarNodo(p->Sig,n);
+    eliminarNodo(p->sig,n);
 }
 
-void mostrarLista(NODO *p){   
-    if(!p) return; 
-    printf("%i \n",p->Num);
-    mostrarLista(p->Sig);
+void mostrarLista(NODO *p){
+    if(!p) return;
+    printf("%i \n",p->num);
+    mostrarLista(p->sig);
 }
 
 
-void liberarMemoria(NODO* &p){    
-    if(!p) return;      
-    liberarMemoria(p->Sig);    
+void liberarMemoria(NODO* &p){
+    if(!p) return;
+    liberarMemoria(p->sig);
     free(p);
 }

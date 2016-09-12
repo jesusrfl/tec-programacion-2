@@ -3,15 +3,15 @@
 #include<string.h>
 
 typedef struct Estudiante{
-       char Cedula[10];
-       char Nombre[20];
-       char Apellido[20];
-       int Edad;
+       char cedula[10];
+       char nombre[20];
+       char apellido[20];
+       int edad;
 }ESTUDIANTE;
 
 typedef struct Nodo{
-        ESTUDIANTE Estudiante;        
-        struct Nodo *Sig;
+        ESTUDIANTE estudiante;
+        struct Nodo *sig;
 }NODO;
 
 void insertarDatos(NODO* &p);
@@ -74,15 +74,15 @@ void insertarDatos(NODO* &p){
 
     system("cls");
     printf("Cedula: ");
-    fflush(stdin);scanf("%s",cedula);
+    fflush(stdin); gets(cedula);
 
     temp = buscarEstudiante(p,cedula);
 
     if(!temp){
-       agregarNodo(p,crearEstudiante(cedula));
+       ESTUDIANTE est = crearEstudiante(cedula);
+       agregarNodo(p,est);
        printf("\nEl siguiente estudiante ha sido agregado a la lista: \n");
-       temp = buscarEstudiante(p,cedula);
-       mostrarEstudiante(temp->Estudiante);
+       mostrarEstudiante(est);
     }else printf("Ya existe un estudiante registrado con la cedula introducida");
 
    guardarDatos(p);
@@ -104,14 +104,15 @@ void modificarDatos(NODO* &p){
     if(!contarNodos(p)) printf("No hay datos registrados");
         else{
                 printf("Cedula: ");
-                fflush(stdin);scanf("%s",cedula);
+                fflush(stdin); gets(cedula);
 
                 temp = buscarEstudiante(p,cedula);
 
                 if(temp){
-                   modificarEstudiante(&temp->Estudiante);
+                   modificarEstudiante(&temp->estudiante);
                    printf("\nEl siguiente estudiante ha sido modificado en la lista: \n");
-                   mostrarEstudiante(temp->Estudiante);
+                   temp = buscarEstudiante(p,cedula);
+                   mostrarEstudiante(temp->estudiante);
                 }else printf("No existe un estudiante registrado con la cedula introducida");
         }
 
@@ -127,12 +128,12 @@ void eliminarDatos(NODO* &p){
     if(!contarNodos(p)) printf("No hay datos registrados");
         else{
                 printf("Cedula: ");
-                fflush(stdin);scanf("%s",cedula);
+                fflush(stdin); gets(cedula);
 
                 temp = buscarEstudiante(p,cedula);
 
                 if(temp){
-                   eliminarEstudiante(p,temp->Estudiante.Cedula);
+                   eliminarEstudiante(p,temp->estudiante.cedula);
                    printf("\nEl estudiante con la cedula '%s' ha sido eliminado correctamente. \n",cedula);
                 }else printf("No existe un estudiante registrado con la cedula introducida");
         }
@@ -146,69 +147,68 @@ NODO* crearNodo(){ return ((NODO*) malloc(sizeof(NODO))); }
 
 ESTUDIANTE crearEstudiante(char *cedula){
     ESTUDIANTE est;
-    strcpy(est.Cedula,cedula);
+    strcpy(est.cedula,cedula);
     printf("Nombre:      ");
-    fflush(stdin);scanf("%s",est.Nombre);
+    fflush(stdin); gets(est.nombre);
     printf("Apellido:    ");
-    fflush(stdin);scanf("%s",est.Apellido);
+    fflush(stdin); gets(est.apellido);
     printf("Edad:        ");
-    fflush(stdin); scanf("%i",&est.Edad);
+    fflush(stdin); scanf("%i",&est.edad);
   return est;
 }
 
 bool agregarNodo(NODO* &p,ESTUDIANTE est){
      if(!p){
         p = crearNodo();
-        p->Estudiante = est;  
-        p->Sig = NULL;
+        p->estudiante = est;
+        p->sig = NULL;
         return true;
      }
-     agregarNodo(p->Sig,est);
+     agregarNodo(p->sig,est);
 }
 
 NODO* buscarEstudiante(NODO *p,char *cedula){
-    if(!p) return NULL;
-    /* Como la función retorna 0 cuando son iguales podemos usar !strcmp(), que sería verdadero
-       cuando las cedulas coincidan */
-    if(!strcmp(cedula,p->Estudiante.Cedula))
-         return p;
-    buscarEstudiante(p->Sig,cedula);
+    while(p){
+        if(!strcmp(cedula,p->estudiante.cedula)) return p;
+        p = p->sig;
+    }
+  return NULL;
 }
 
 void modificarEstudiante(ESTUDIANTE *est){
     printf("Nombre:      ");
-    fflush(stdin);scanf("%s",est->Nombre);
+    fflush(stdin); gets(est->nombre);
     printf("Apellido:    ");
-    fflush(stdin);scanf("%s",est->Apellido);
+    fflush(stdin); gets(est->apellido);
     printf("Edad:        ");
-    fflush(stdin);scanf("%i",&est->Edad);
+    fflush(stdin); scanf("%i",&est->edad);
 }
 
-int contarNodos(NODO *p){ return (!p) ? 0 : 1+contarNodos(p->Sig); }
+int contarNodos(NODO *p){ return (!p) ? 0 : 1+contarNodos(p->sig); }
 
 void mostrarEstudiante(ESTUDIANTE est){
-    printf("Cedula:      %s \n",est.Cedula);
-    printf("Nombre:      %s \n",est.Nombre);
-    printf("Apellido:    %s \n",est.Apellido);
-    printf("Edad:        %i \n\n",est.Edad);
+    printf("Cedula:      %s \n",est.cedula);
+    printf("Nombre:      %s \n",est.nombre);
+    printf("Apellido:    %s \n",est.apellido);
+    printf("Edad:        %i \n\n",est.edad);
 }
 
 void mostrarLista(NODO *p){
     if(!p) return;
-    mostrarEstudiante(p->Estudiante);
-    mostrarLista(p->Sig);
+    mostrarEstudiante(p->estudiante);
+    mostrarLista(p->sig);
 }
 
 bool eliminarEstudiante(NODO* &p,char *cedula){
     NODO *temp;
     if(!p) return false;
-    if(!strcmp(cedula,p->Estudiante.Cedula)){
+    if(!strcmp(cedula,p->estudiante.cedula)){
         temp = p;
-        p = p->Sig;
+        p = p->sig;
         free(temp);
         return true;
     }
-    eliminarEstudiante(p->Sig,cedula);
+    eliminarEstudiante(p->sig,cedula);
 }
 
 void crearArchivo(){
@@ -221,7 +221,7 @@ void crearArchivo(){
 
 void liberarMemoria(NODO* &p){
     if(!p) return;
-    liberarMemoria(p->Sig);
+    liberarMemoria(p->sig);
     free(p);
 }
 
@@ -248,7 +248,7 @@ void guardarDatos(NODO *p){
 
 void guardarLista(NODO *p,FILE *archivo){
     if(!p) return;
-    fwrite(&p->Estudiante,sizeof(ESTUDIANTE),1,archivo);
-    guardarLista(p->Sig,archivo);
+    fwrite(&p->estudiante,sizeof(ESTUDIANTE),1,archivo);
+    guardarLista(p->sig,archivo);
 }
 
