@@ -14,22 +14,22 @@ typedef struct Nodo{
         struct Nodo *sig;
 }NODO;
 
-void insertarDatos(NODO* &p);
+void insertarDatos(NODO* *p);
 void mostrarDatos(NODO *p);
-void modificarDatos(NODO* &p);
-void eliminarDatos(NODO* &p);
+void modificarDatos(NODO* *p);
+void eliminarDatos(NODO* *p);
 NODO* crearNodo();
 ESTUDIANTE crearEstudiante(char *cedula);
-bool agregarNodo(NODO* &p,ESTUDIANTE est);
+int agregarNodo(NODO* *p,ESTUDIANTE est);
 NODO* buscarEstudiante(NODO *p,char *cedula);
 int contarNodos(NODO *p);
 void mostrarEstudiante(ESTUDIANTE est);
 void mostrarLista(NODO *p);
 void modificarEstudiante(ESTUDIANTE *est);
-bool eliminarEstudiante(NODO* &p,char *cedula);
-void liberarMemoria(NODO* &p);
+int eliminarEstudiante(NODO* *p,char *cedula);
+void liberarMemoria(NODO* *p);
 void crearArchivo();
-void cargarDatos(NODO* &p);
+void cargarDatos(NODO* *p);
 void guardarDatos(NODO *p);
 void guardarLista(NODO *p, FILE *archivo);
 
@@ -41,7 +41,7 @@ int main(){
     char op;
 
     crearArchivo(); // Si no ha sido creado
-    cargarDatos(lista);
+    cargarDatos(&lista);
 
     do{
          system("cls");
@@ -53,22 +53,22 @@ int main(){
          fflush(stdin); op = getchar();
 
          switch(op){
-             case '1': insertarDatos(lista);break;
+             case '1': insertarDatos(&lista);break;
              case '2': mostrarDatos(lista);break;
-             case '3': modificarDatos(lista);break;
-             case '4': eliminarDatos(lista);break;
+             case '3': modificarDatos(&lista);break;
+             case '4': eliminarDatos(&lista);break;
              case '5': op = 'Z'; break;
              default: printf("Opcion invalida"); fflush(stdin); getchar();
          }
     }while(op != 'Z');
 
-    liberarMemoria(lista);
+    liberarMemoria(&lista);
   return 0;
 }
 //***************************************************************************************************************
 
 
-void insertarDatos(NODO* &p){
+void insertarDatos(NODO* *p){
     char cedula[10];
     NODO *temp;
 
@@ -76,7 +76,7 @@ void insertarDatos(NODO* &p){
     printf("Cedula: ");
     fflush(stdin); gets(cedula);
 
-    temp = buscarEstudiante(p,cedula);
+    temp = buscarEstudiante(*p,cedula);
 
     if(!temp){
        ESTUDIANTE est = crearEstudiante(cedula);
@@ -85,60 +85,60 @@ void insertarDatos(NODO* &p){
        mostrarEstudiante(est);
     }else printf("Ya existe un estudiante registrado con la cedula introducida");
 
-   guardarDatos(p);
+   guardarDatos(*p);
    fflush(stdin); getchar();
 }
 
 void mostrarDatos(NODO *p){
      system("cls");
      if(contarNodos(p) != 0) mostrarLista(p);
-         else printf("No hay datos registrados");
+     else printf("No hay datos registrados");
     fflush(stdin); getchar();
 }
 
-void modificarDatos(NODO* &p){
+void modificarDatos(NODO* *p){
     char cedula[10];
     NODO *temp;
 
     system("cls");
-    if(!contarNodos(p)) printf("No hay datos registrados");
-        else{
-                printf("Cedula: ");
-                fflush(stdin); gets(cedula);
+    if(!contarNodos(*p)) printf("No hay datos registrados");
+    else{
+            printf("Cedula: ");
+            fflush(stdin); gets(cedula);
 
-                temp = buscarEstudiante(p,cedula);
+            temp = buscarEstudiante(*p,cedula);
 
-                if(temp){
-                   modificarEstudiante(&temp->estudiante);
-                   printf("\nEl siguiente estudiante ha sido modificado en la lista: \n");
-                   temp = buscarEstudiante(p,cedula);
-                   mostrarEstudiante(temp->estudiante);
-                }else printf("No existe un estudiante registrado con la cedula introducida");
-        }
+            if(temp){
+                modificarEstudiante(&temp->estudiante);
+                printf("\nEl siguiente estudiante ha sido modificado en la lista: \n");
+                temp = buscarEstudiante(*p,cedula);
+                mostrarEstudiante(temp->estudiante);
+            }else printf("No existe un estudiante registrado con la cedula introducida");
+    }
 
-   guardarDatos(p);
+   guardarDatos(*p);
    fflush(stdin); getchar();
 }
 
-void eliminarDatos(NODO* &p){
+void eliminarDatos(NODO* *p){
     char cedula[10];
     NODO *temp;
 
     system("cls");
-    if(!contarNodos(p)) printf("No hay datos registrados");
-        else{
-                printf("Cedula: ");
-                fflush(stdin); gets(cedula);
+    if(!contarNodos(*p)) printf("No hay datos registrados");
+    else{
+          printf("Cedula: ");
+          fflush(stdin); gets(cedula);
 
-                temp = buscarEstudiante(p,cedula);
+          temp = buscarEstudiante(*p,cedula);
 
-                if(temp){
-                   eliminarEstudiante(p,temp->estudiante.cedula);
-                   printf("\nEl estudiante con la cedula '%s' ha sido eliminado correctamente. \n",cedula);
-                }else printf("No existe un estudiante registrado con la cedula introducida");
-        }
+          if(temp){
+              eliminarEstudiante(p,temp->estudiante.cedula);
+              printf("\nEl estudiante con la cedula '%s' ha sido eliminado correctamente. \n",cedula);
+         }else printf("No existe un estudiante registrado con la cedula introducida");
+    }
 
-   guardarDatos(p);
+   guardarDatos(*p);
    fflush(stdin); getchar();
 }
 
@@ -157,14 +157,14 @@ ESTUDIANTE crearEstudiante(char *cedula){
   return est;
 }
 
-bool agregarNodo(NODO* &p,ESTUDIANTE est){
-     if(!p){
-        p = crearNodo();
-        p->estudiante = est;
-        p->sig = NULL;
-        return true;
+int agregarNodo(NODO* *p,ESTUDIANTE est){
+     if(*p == NULL){
+        *p = crearNodo();
+        (*p)->estudiante = est;
+        (*p)->sig = NULL;
+        return 1;
      }
-     agregarNodo(p->sig,est);
+     agregarNodo(&(*p)->sig,est);
 }
 
 NODO* buscarEstudiante(NODO *p,char *cedula){
@@ -199,16 +199,18 @@ void mostrarLista(NODO *p){
     mostrarLista(p->sig);
 }
 
-bool eliminarEstudiante(NODO* &p,char *cedula){
+int eliminarEstudiante(NODO* *p,char *cedula){
     NODO *temp;
-    if(!p) return false;
-    if(!strcmp(cedula,p->estudiante.cedula)){
-        temp = p;
-        p = p->sig;
+
+    if(*p == NULL) return 0;
+
+    if(!strcmp(cedula,(*p)->estudiante.cedula)){
+        temp = *p;
+        *p = (*p)->sig;
         free(temp);
-        return true;
+        return 1;
     }
-    eliminarEstudiante(p->sig,cedula);
+    eliminarEstudiante(&(*p)->sig,cedula);
 }
 
 void crearArchivo(){
@@ -219,13 +221,13 @@ void crearArchivo(){
   fclose(archivo);
 }
 
-void liberarMemoria(NODO* &p){
-    if(!p) return;
-    liberarMemoria(p->sig);
-    free(p);
+void liberarMemoria(NODO* *p){
+    if(*p == NULL) return;
+    liberarMemoria(&(*p)->sig);
+    free(*p);
 }
 
-void cargarDatos(NODO* &p){
+void cargarDatos(NODO* *p){
      ESTUDIANTE temp_est;
      FILE *archivo = fopen("datos.dat","rb");
      if(archivo){
@@ -251,4 +253,3 @@ void guardarLista(NODO *p,FILE *archivo){
     fwrite(&p->estudiante,sizeof(ESTUDIANTE),1,archivo);
     guardarLista(p->sig,archivo);
 }
-

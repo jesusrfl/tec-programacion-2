@@ -1,6 +1,5 @@
 #include<stdio.h>
 
-
 int factorial(int n);
 int division(int a,int b);
 int multiplicacion(int a, int b);
@@ -30,4 +29,3 @@ int multiplicacion(int a, int b){ return (b==0) ? 0 : a+multiplicacion(a,b-1); }
 int potencia(int a, int b){ return (b==0) ? 1 : a*potencia(a,b-1); }
 
 int contar(char *c){ return (*c=='\0') ? 0 : 1+contar(++c); }
-

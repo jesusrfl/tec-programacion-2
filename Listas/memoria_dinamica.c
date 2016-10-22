@@ -4,8 +4,7 @@
 
 int main(){
 
-    int *x,*j,t,i=0;
-
+    int *x,*j,t,i;
 
     printf("Cantidad: ");
     scanf("%i",&t);
@@ -13,8 +12,8 @@ int main(){
     x = (int*) malloc(t*sizeof(int));
 
     if(x){
-       for(int i=0; i<t; i++) x[i] = i+1;
-       for(int i=0; i<t; i++) printf("%i \n",x[i]);
+       for(i=0; i<t; i++) x[i] = i+1;
+       for(i=0; i<t; i++) printf("%i \n",x[i]);
        free(x);
     }else printf("No se ha podido reservar la memoria \n");
 
